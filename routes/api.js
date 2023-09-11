@@ -54,21 +54,23 @@ module.exports = function (app) {
 
     .post(async (req, res) => {
       const board = req.params.board;
-      //collection will be the board
+      // Collection will be the board
       const Thread = mongoose.model('Thread', ThreadSchema, board);
       const text = xssFilters.inHTMLData(req.body.text);
       const pass = xssFilters.inHTMLData(req.body.delete_password);
-
-      //create the thread
+    
+      // Create the thread
       const threadCreationDate = new Date();
       const thread = await Thread.create({
         text: text,
         delete_password: pass,
         created_on: threadCreationDate,
         bumped_on: threadCreationDate,
+        reported: false, // Set to false by default
+        replies: [], // An empty array for replies
       });
-
-      res.redirect('back'); //reload the page
+    
+      res.redirect('back'); // Reload the page
     })
 
     .delete(async (req, res) => {
